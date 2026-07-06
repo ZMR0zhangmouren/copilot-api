@@ -64,7 +64,8 @@ export async function runServer(options: RunServerOptions): Promise<void> {
     state.githubToken = options.githubToken
     consola.info("Using provided GitHub token")
   } else {
-    await setupGitHubToken()
+    // GHE 模式下强制重新认证，因为缓存的 github.com token 不适用于 GHE
+    await setupGitHubToken(options.gheHost ? { force: true } : undefined)
   }
 
   await setupCopilotToken()

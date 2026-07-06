@@ -39,6 +39,7 @@ A reverse-engineered proxy for the GitHub Copilot API that exposes it as an Open
 - **Token Visibility**: Option to display GitHub and Copilot tokens during authentication and refresh for debugging (`--show-token`).
 - **Flexible Authentication**: Authenticate interactively or provide a GitHub token directly, suitable for CI/CD environments.
 - **Support for Different Account Types**: Works with individual, business, and enterprise GitHub Copilot plans.
+- **GitHub Enterprise Server (GHE) Support**: Connect to self-hosted GitHub Enterprise Server instances (e.g., `xxxx.ghe.com`) via `--ghe-host`. Automatically discovers Copilot API endpoints from token response.
 
 ## Demo
 
@@ -163,6 +164,9 @@ The following command line options are available for the `start` command:
 | --claude-code  | Generate a command to launch Claude Code with Copilot API config              | false      | -c    |
 | --show-token   | Show GitHub and Copilot tokens on fetch and refresh                           | false      | none  |
 | --proxy-env    | Initialize proxy from environment variables                                   | false      | none  |
+| --ghe-host     | GitHub Enterprise Server hostname (e.g., xxxx.ghe.com)                    | none       | none  |
+| --ghe-client-id | OAuth App Client ID for GHE device flow                                       | none       | none  |
+| --ghe-copilot-base | Override Copilot API base URL for GHE (default: auto-detected)             | none       | none  |
 
 ### Auth Command Options
 
@@ -199,6 +203,7 @@ These endpoints are designed to be compatible with the Anthropic Messages API.
 | -------------------------------- | ------ | ------------------------------------------------------------ |
 | `POST /v1/messages`              | `POST` | Creates a model response for a given conversation.           |
 | `POST /v1/messages/count_tokens` | `POST` | Calculates the number of tokens for a given set of messages. |
+| `POST /v1/responses`             | `POST` | OpenAI Responses API compatible endpoint.                    |
 
 ### Usage Monitoring Endpoints
 
@@ -341,6 +346,46 @@ bun run dev
 ```sh
 bun run start
 ```
+
+## GitHub Enterprise Server (GHE)
+
+This fork supports self-hosted GitHub Enterprise Server instances. Simply pass your GHE hostname:
+
+```sh
+# Start with GHE
+bun run ./src/main.ts start --ghe-host=your-company.ghe.com
+
+# Authentication only (to cache token)
+bun run ./src/main.ts auth --ghe-host=your-company.ghe.com
+```
+
+### How it works
+
+1. All GitHub API URLs (`github.com`, `api.github.com`) are dynamically replaced with your GHE hostname
+2. The Copilot API endpoint is **auto-discovered** from the token response (`endpoints.api` field) — no manual path guessing needed
+3. Device code OAuth flow works against your GHE instance
+4. When a model requires the `/responses` endpoint instead of `/chat/completions`, the proxy **automatically falls back** with transparent format translation
+
+### Advanced options
+
+```sh
+# With custom OAuth App Client ID (register one on your GHE instance)
+bun run ./src/main.ts start --ghe-host=company.ghe.com --ghe-client-id=Iv1.xxxxx
+
+# Override Copilot API base URL if auto-detection doesn't work
+bun run ./src/main.ts start --ghe-host=company.ghe.com --ghe-copilot-base=https://copilot-api.company.ghe.com
+```
+
+### Model Compatibility
+
+| Vendor | `/chat/completions` | Models |
+|--------|---------------------|--------|
+| Azure OpenAI | ✅ | gpt-4o, gpt-4.1, gpt-4, gpt-3.5, gpt-5-mini |
+| Google | ✅ | gemini-2.5-pro, gemini-3.x series |
+| OpenAI | ✅ (auto-fallback) | gpt-5.5, gpt-5.4, gpt-5.4-mini, gpt-5.3-codex |
+| Microsoft | ❌ | mai-code-1-flash-picker |
+
+> **Note:** OpenAI-vendor models (gpt-5.x) require the `/responses` endpoint. The proxy detects this automatically and retries with the correct endpoint — no action needed.
 
 ## Usage Tips
 

@@ -25,6 +25,10 @@ interface RunServerOptions {
   claudeCode: boolean
   showToken: boolean
   proxyEnv: boolean
+  /** GitHub Enterprise Server 域名（如 avepoint.ghe.com） */
+  gheHost?: string
+  /** GHE 上的 OAuth App Client ID */
+  gheClientId?: string
 }
 
 export async function runServer(options: RunServerOptions): Promise<void> {
@@ -40,6 +44,12 @@ export async function runServer(options: RunServerOptions): Promise<void> {
   state.accountType = options.accountType
   if (options.accountType !== "individual") {
     consola.info(`Using ${options.accountType} plan GitHub account`)
+  }
+
+  if (options.gheHost) {
+    state.gheHost = options.gheHost
+    state.gheClientId = options.gheClientId
+    consola.info(`Using GitHub Enterprise Server: ${options.gheHost}`)
   }
 
   state.manualApprove = options.manual
@@ -184,6 +194,16 @@ export const start = defineCommand({
       default: false,
       description: "Initialize proxy from environment variables",
     },
+    "ghe-host": {
+      type: "string",
+      description:
+        "GitHub Enterprise Server hostname (e.g., avepoint.ghe.com). All API requests will use this host.",
+    },
+    "ghe-client-id": {
+      type: "string",
+      description:
+        "OAuth App Client ID for GHE device flow. Only needed when --ghe-host is set.",
+    },
   },
   run({ args }) {
     const rateLimitRaw = args["rate-limit"]
@@ -202,6 +222,8 @@ export const start = defineCommand({
       claudeCode: args["claude-code"],
       showToken: args["show-token"],
       proxyEnv: args["proxy-env"],
+      gheHost: args["ghe-host"],
+      gheClientId: args["ghe-client-id"],
     })
   },
 })

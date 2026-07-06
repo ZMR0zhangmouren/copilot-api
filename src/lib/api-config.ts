@@ -13,10 +13,14 @@ const USER_AGENT = `GitHubCopilotChat/${COPILOT_VERSION}`
 
 const API_VERSION = "2025-04-01"
 
-export const copilotBaseUrl = (state: State) =>
-  state.accountType === "individual" ?
+export const copilotBaseUrl = (state: State) => {
+  if (state.gheHost) {
+    return `https://${state.gheHost}/github-copilot`
+  }
+  return state.accountType === "individual" ?
     "https://api.githubcopilot.com"
   : `https://api.${state.accountType}.githubcopilot.com`
+}
 export const copilotHeaders = (state: State, vision: boolean = false) => {
   const headers: Record<string, string> = {
     Authorization: `Bearer ${state.copilotToken}`,
@@ -36,6 +40,10 @@ export const copilotHeaders = (state: State, vision: boolean = false) => {
   return headers
 }
 
+export const githubApiBaseUrl = (state: State) =>
+  state.gheHost ? `https://${state.gheHost}/api/v3` : "https://api.github.com"
+
+/** @deprecated 使用 githubApiBaseUrl(state) 替代 */
 export const GITHUB_API_BASE_URL = "https://api.github.com"
 export const githubHeaders = (state: State) => ({
   ...standardHeaders(),
@@ -47,6 +55,14 @@ export const githubHeaders = (state: State) => ({
   "x-vscode-user-agent-library-version": "electron-fetch",
 })
 
+export const githubBaseUrl = (state: State) =>
+  state.gheHost ? `https://${state.gheHost}` : "https://github.com"
+
+/** @deprecated 使用 githubBaseUrl(state) 替代 */
 export const GITHUB_BASE_URL = "https://github.com"
+export const githubClientId = (state: State) =>
+  state.gheClientId ?? "Iv1.b507a08c87ecfe98"
+
+/** @deprecated 使用 githubClientId(state) 替代 */
 export const GITHUB_CLIENT_ID = "Iv1.b507a08c87ecfe98"
 export const GITHUB_APP_SCOPES = ["read:user"].join(" ")

@@ -38,7 +38,10 @@ export async function handleCompletion(c: Context) {
     await awaitApproval()
   }
 
-  const response = await createChatCompletions(openAIPayload)
+  const response = (await createChatCompletions(openAIPayload)) as
+    | ChatCompletionResponse
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    | AsyncGenerator<any>
 
   if (isNonStreaming(response)) {
     consola.debug(

@@ -87,9 +87,12 @@ export async function handleResponses(c: Context) {
   await checkRateLimit(state)
 
   const body = await c.req.json<ResponsesRequest>()
-  consola.debug("Responses API request:", JSON.stringify(body).slice(-400))
+  consola.debug("=== RAW Responses API request ===")
+  consola.debug(JSON.stringify(body, null, 2))
 
   const payload = toChatCompletionsPayload(body)
+  consola.debug("=== Translated Chat Completions payload ===")
+  consola.debug(JSON.stringify(payload, null, 2))
 
   const selectedModel = state.models?.data.find((m) => m.id === payload.model)
 

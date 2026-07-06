@@ -57,9 +57,13 @@ export async function setupGitHubToken(
       if (state.showToken) {
         consola.info("GitHub token:", githubToken)
       }
-      await logUser()
-
-      return
+      try {
+        await logUser()
+        return
+      } catch {
+        consola.warn("Cached token is invalid or expired, re-authenticating...")
+        // 缓存 token 失效，继续走到 device code 流程
+      }
     }
 
     consola.info("Not logged in, getting new access token")

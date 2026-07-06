@@ -15,7 +15,12 @@ const API_VERSION = "2025-04-01"
 
 export const copilotBaseUrl = (state: State) => {
   if (state.gheHost) {
-    return `https://${state.gheHost}/github-copilot`
+    // 优先级: --ghe-copilot-base > token 响应中的 endpoints.api > 默认推导
+    return (
+      state.gheCopilotBase
+      ?? state.copilotApiEndpoint
+      ?? `https://copilot-api.${state.gheHost}`
+    )
   }
   return state.accountType === "individual" ?
     "https://api.githubcopilot.com"

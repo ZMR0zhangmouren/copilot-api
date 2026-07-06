@@ -29,6 +29,8 @@ interface RunServerOptions {
   gheHost?: string
   /** GHE 上的 OAuth App Client ID */
   gheClientId?: string
+  /** GHE Copilot API 的 base URL（默认 https://<gheHost>/github-copilot） */
+  gheCopilotBase?: string
 }
 
 export async function runServer(options: RunServerOptions): Promise<void> {
@@ -49,6 +51,7 @@ export async function runServer(options: RunServerOptions): Promise<void> {
   if (options.gheHost) {
     state.gheHost = options.gheHost
     state.gheClientId = options.gheClientId
+    state.gheCopilotBase = options.gheCopilotBase
     consola.info(`Using GitHub Enterprise Server: ${options.gheHost}`)
   }
 
@@ -204,6 +207,11 @@ export const start = defineCommand({
       description:
         "OAuth App Client ID for GHE device flow. Only needed when --ghe-host is set.",
     },
+    "ghe-copilot-base": {
+      type: "string",
+      description:
+        "Copilot API base URL for GHE. Default: https://<ghe-host>/github-copilot. Override if Copilot API is at a different path.",
+    },
   },
   run({ args }) {
     const rateLimitRaw = args["rate-limit"]
@@ -224,6 +232,7 @@ export const start = defineCommand({
       proxyEnv: args["proxy-env"],
       gheHost: args["ghe-host"],
       gheClientId: args["ghe-client-id"],
+      gheCopilotBase: args["ghe-copilot-base"],
     })
   },
 })

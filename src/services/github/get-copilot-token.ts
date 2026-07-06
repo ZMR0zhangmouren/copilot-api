@@ -16,7 +16,12 @@ export const getCopilotToken = async () => {
 }
 
 // Trimmed for the sake of simplicity
-interface GetCopilotTokenResponse {
+export interface GetCopilotTokenResponse {
+  endpoints?: {
+    api: string
+    proxy?: string
+    telemetry?: string
+  }
   expires_at: number
   refresh_in: number
   token: string

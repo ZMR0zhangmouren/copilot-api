@@ -1,5 +1,21 @@
 # Copilot API Proxy
 
+> **This fork** adds **GitHub Enterprise Server (GHE) support**, `/v1/responses` endpoint, and auto-fallback for gpt-5.x models.
+> See [GitHub Enterprise Server](#github-enterprise-server-ghe) section for details.
+>
+> Forked from [ericc-ch/copilot-api](https://github.com/ericc-ch/copilot-api).
+
+| Feature | Upstream | This Fork |
+|---------|----------|-----------|
+| github.com support | ✅ | ✅ |
+| GHE support (`--ghe-host`) | ❌ | ✅ |
+| Copilot API endpoint auto-discovery | — | ✅ from token response |
+| `/v1/responses` endpoint | ❌ | ✅ |
+| gpt-5.x models (gpt-5.5/5.4/5.3) | ❌ | ✅ auto-fallback to `/responses` |
+| Model auto-fallback (`/chat/completions` → `/responses`) | ❌ | ✅ transparent |
+
+---
+
 > [!WARNING]
 > This is a reverse-engineered proxy of GitHub Copilot API. It is not supported by GitHub, and may break unexpectedly. Use at your own risk.
 

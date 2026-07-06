@@ -1,6 +1,20 @@
 # Copilot API Proxy
 
-> 将 GitHub Copilot API 代理为 OpenAI / Anthropic 兼容接口，支持 **GitHub Enterprise Server（GHE）**。
+> **本 Fork** 新增 **GitHub Enterprise Server（GHE）支持**、`/v1/responses` 端点、gpt-5.x 模型自动适配。
+> 复刻自 [ericc-ch/copilot-api](https://github.com/ericc-ch/copilot-api)。
+
+### 本 Fork 更新内容
+
+| 功能 | 上游 (ericc-ch/copilot-api) | 本 Fork |
+|------|---------------------------|---------|
+| github.com 支持 | ✅ | ✅ |
+| GHE 支持 | ❌ | ✅ `--ghe-host` |
+| Copilot API endpoint 自动发现 | ❌ | ✅ 从 token 响应动态获取 |
+| `/v1/responses` 端点 | ❌ | ✅ |
+| gpt-5.x 模型（gpt-5.5/5.4/5.3） | ❌ | ✅ 自动降级到 `/responses` |
+| 模型自动降级（`/chat/completions` → `/responses`） | ❌ | ✅ 对客户端透明 |
+| Token 缓存失效自动重新认证 | ❌ | ✅ 无需手动干预 |
+| 中文文档 | ❌ | ✅ README.zh-CN.md |
 
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
@@ -8,19 +22,7 @@
 
 ## 项目概述
 
-本项目复刻自 [copilot-api](https://github.com/ericc-ch/copilot-api)，并增强了 **GHE 支持**。
-
-它是一个 GitHub Copilot API 的反向代理，将其暴露为与 OpenAI 和 Anthropic 兼容的服务。你可以用任何支持 OpenAI Chat Completions API 或 Anthropic Messages API 的工具来使用 GitHub Copilot，包括驱动 [Claude Code](https://docs.anthropic.com/en/docs/claude-code/overview)。
-
-### 与上游的区别
-
-| 功能 | 上游 (ericc-ch/copilot-api) | 本 Fork |
-|------|---------------------------|---------|
-| github.com 支持 | ✅ | ✅ |
-| GHE 支持 | ❌ | ✅ `--ghe-host` |
-| Copilot API 自动发现 | — | ✅ 从 token 响应动态获取 |
-| `/responses` 端点 | ❌ | ✅ 自动降级 |
-| gpt-5.x 模型 | ❌ | ✅ 自动切换端点 |
+本项目将 GitHub Copilot API 代理为与 OpenAI / Anthropic 兼容的服务。你可以用任何支持 OpenAI Chat Completions API 或 Anthropic Messages API 的工具来使用 GitHub Copilot，包括驱动 [Claude Code](https://docs.anthropic.com/en/docs/claude-code/overview)。
 
 ## 功能特性
 

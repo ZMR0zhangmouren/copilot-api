@@ -1,5 +1,7 @@
 # Copilot API Proxy
 
+> 📖 [English](README.md)
+
 > **本 Fork** 新增 **GitHub Enterprise Server（GHE）支持**、`/v1/responses` 端点、gpt-5.x 模型自动适配。
 > 复刻自 [ericc-ch/copilot-api](https://github.com/ericc-ch/copilot-api)。
 

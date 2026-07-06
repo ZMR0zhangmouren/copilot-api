@@ -1,5 +1,7 @@
 # Copilot API Proxy
 
+> 📖 [中文文档](README.zh-CN.md)
+
 > **This fork** adds **GitHub Enterprise Server (GHE) support**, `/v1/responses` endpoint, and auto-fallback for gpt-5.x models.
 > See [GitHub Enterprise Server](#github-enterprise-server-ghe) section for details.
 >

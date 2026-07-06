@@ -1,15 +1,31 @@
+import consola from "consola"
+
 import { copilotBaseUrl, copilotHeaders } from "~/lib/api-config"
 import { HTTPError } from "~/lib/error"
 import { state } from "~/lib/state"
 
 export const getModels = async () => {
-  const response = await fetch(`${copilotBaseUrl(state)}/models`, {
+  const url = `${copilotBaseUrl(state)}/models`
+  consola.debug(`Fetching models from: ${url}`)
+
+  const response = await fetch(url, {
     headers: copilotHeaders(state),
   })
 
-  if (!response.ok) throw new HTTPError("Failed to get models", response)
+  if (!response.ok) {
+    const body = await response.text().catch(() => "<unreadable>")
+    consola.error(`Models response (${response.status}):`, body.slice(0, 500))
+    throw new HTTPError("Failed to get models", response)
+  }
 
-  return (await response.json()) as ModelsResponse
+  const text = await response.text()
+  try {
+    return JSON.parse(text) as ModelsResponse
+  } catch {
+    consola.error(`Failed to parse models JSON. URL: ${url}`)
+    consola.error(`Raw response (first 500 chars):`, text.slice(0, 500))
+    throw new Error(`Failed to parse models JSON from ${url}`)
+  }
 }
 
 export interface ModelsResponse {

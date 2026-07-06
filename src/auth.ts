@@ -12,6 +12,7 @@ interface RunAuthOptions {
   showToken: boolean
   gheHost?: string
   gheClientId?: string
+  gheCopilotBase?: string
 }
 
 export async function runAuth(options: RunAuthOptions): Promise<void> {
@@ -25,6 +26,7 @@ export async function runAuth(options: RunAuthOptions): Promise<void> {
   if (options.gheHost) {
     state.gheHost = options.gheHost
     state.gheClientId = options.gheClientId
+    state.gheCopilotBase = options.gheCopilotBase
     consola.info(`Using GitHub Enterprise Server: ${options.gheHost}`)
   }
 
@@ -60,6 +62,11 @@ export const auth = defineCommand({
       description:
         "OAuth App Client ID for GHE device flow",
     },
+    "ghe-copilot-base": {
+      type: "string",
+      description:
+        "Copilot API base URL for GHE. Default: https://<ghe-host>/github-copilot",
+    },
   },
   run({ args }) {
     return runAuth({
@@ -67,6 +74,7 @@ export const auth = defineCommand({
       showToken: args["show-token"],
       gheHost: args["ghe-host"],
       gheClientId: args["ghe-client-id"],
+      gheCopilotBase: args["ghe-copilot-base"],
     })
   },
 })

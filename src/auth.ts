@@ -10,6 +10,8 @@ import { setupGitHubToken } from "./lib/token"
 interface RunAuthOptions {
   verbose: boolean
   showToken: boolean
+  gheHost?: string
+  gheClientId?: string
 }
 
 export async function runAuth(options: RunAuthOptions): Promise<void> {
@@ -19,6 +21,12 @@ export async function runAuth(options: RunAuthOptions): Promise<void> {
   }
 
   state.showToken = options.showToken
+
+  if (options.gheHost) {
+    state.gheHost = options.gheHost
+    state.gheClientId = options.gheClientId
+    consola.info(`Using GitHub Enterprise Server: ${options.gheHost}`)
+  }
 
   await ensurePaths()
   await setupGitHubToken({ force: true })
@@ -42,11 +50,23 @@ export const auth = defineCommand({
       default: false,
       description: "Show GitHub token on auth",
     },
+    "ghe-host": {
+      type: "string",
+      description:
+        "GitHub Enterprise Server hostname (e.g., avepoint.ghe.com)",
+    },
+    "ghe-client-id": {
+      type: "string",
+      description:
+        "OAuth App Client ID for GHE device flow",
+    },
   },
   run({ args }) {
     return runAuth({
       verbose: args.verbose,
       showToken: args["show-token"],
+      gheHost: args["ghe-host"],
+      gheClientId: args["ghe-client-id"],
     })
   },
 })

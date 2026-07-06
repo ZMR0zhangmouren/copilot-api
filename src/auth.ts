@@ -55,7 +55,7 @@ export const auth = defineCommand({
     "ghe-host": {
       type: "string",
       description:
-        "GitHub Enterprise Server hostname (e.g., avepoint.ghe.com)",
+        "GitHub Enterprise Server hostname (e.g., xxxx.ghe.com)",
     },
     "ghe-client-id": {
       type: "string",

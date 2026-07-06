@@ -5,7 +5,7 @@ export interface State {
   copilotToken?: string
 
   accountType: string
-  /** GitHub Enterprise Server 域名（如 avepoint.ghe.com）。设置后所有 API 请求指向 GHE */
+  /** GitHub Enterprise Server 域名（如 xxxx.ghe.com）。设置后所有 API 请求指向 GHE */
   gheHost?: string
   /** GHE 上的 OAuth App Client ID（仅 GHE 模式需要） */
   gheClientId?: string

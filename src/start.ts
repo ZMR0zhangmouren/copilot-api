@@ -25,7 +25,7 @@ interface RunServerOptions {
   claudeCode: boolean
   showToken: boolean
   proxyEnv: boolean
-  /** GitHub Enterprise Server 域名（如 avepoint.ghe.com） */
+  /** GitHub Enterprise Server 域名（如 xxxx.ghe.com） */
   gheHost?: string
   /** GHE 上的 OAuth App Client ID */
   gheClientId?: string
@@ -200,7 +200,7 @@ export const start = defineCommand({
     "ghe-host": {
       type: "string",
       description:
-        "GitHub Enterprise Server hostname (e.g., avepoint.ghe.com). All API requests will use this host.",
+        "GitHub Enterprise Server hostname (e.g., xxxx.ghe.com). All API requests will use this host.",
     },
     "ghe-client-id": {
       type: "string",
